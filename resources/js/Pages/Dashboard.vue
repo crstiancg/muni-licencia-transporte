@@ -41,7 +41,7 @@ const fetchLicencias = async () => {
 
         const order_by = descending ? `-${sortBy}` : sortBy;
 
-        const { data } = await axios.get("/licencias", {
+        const { data } = await axios.get("/api/licencias", {
             params: {
                 page,
                 per_page: rowsPerPage,
@@ -132,7 +132,7 @@ async function editar(id) {
                     <div class="p-6">
                         <h2 class="text-xl font-bold mb-4">Listado de Licencias</h2>
 
-                        <!-- <div v-if="loading" class="text-center py-4">Cargando...</div> -->
+                        <div v-if="loading" class="text-center py-4">Cargando...</div>
                         <TextInput v-model="filter" type="text" placeholder="Buscar..."
                             class="border px-3 py-2 rounded w-1/3">
                         </TextInput>
