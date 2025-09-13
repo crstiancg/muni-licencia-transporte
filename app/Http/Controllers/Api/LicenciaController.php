@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreLicenciaRequest;
 use App\Models\Licencia;
 use Illuminate\Http\Request;
 
@@ -25,9 +26,11 @@ class LicenciaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreLicenciaRequest $request)
     {
-        //
+        $licencia = Licencia::create($request->all());
+
+        return $licencia;
     }
 
     /**

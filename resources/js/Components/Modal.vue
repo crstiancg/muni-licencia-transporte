@@ -66,13 +66,14 @@ const maxWidthClass = computed(() => {
         '2xl': 'sm:max-w-2xl',
         '3xl': 'sm:max-w-3xl',
         '4xl': 'sm:max-w-4xl',
+        '5xl': 'sm:max-w-5xl',
     }[props.maxWidth];
 });
 </script>
 
 <template>
     <dialog class="z-50 m-0 min-h-full min-w-full overflow-y-auto bg-transparent backdrop:bg-transparent" ref="dialog">
-        <div class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region>
+        <div class="fixed inset-0 overflow-y-auto px-4 sm:py-32 py-16 sm:px-0 z-50" scroll-region>
             <transition
                 enter-active-class="ease-out duration-300"
                 enter-from-class="opacity-0"
