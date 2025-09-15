@@ -1,10 +1,13 @@
 import './bootstrap';
 import '../css/app.css';
+import 'preline/preline';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import { HSStaticMethods } from 'preline';
+import { router } from '@inertiajs/vue3';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -20,4 +23,11 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+});
+
+
+router.on('navigate', () => {
+    setTimeout(() => {
+        HSStaticMethods.autoInit();
+    }, 50);
 });
