@@ -38,7 +38,7 @@ class LicenciaController extends Controller
      */
     public function show(Licencia $licencia)
     {
-        //
+        return $licencia;
     }
 
     /**
@@ -46,7 +46,9 @@ class LicenciaController extends Controller
      */
     public function update(Request $request, Licencia $licencia)
     {
-        //
+        $licencia->update($request->all());
+
+        return $licencia;
     }
 
     /**

@@ -1,13 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
-
-
 </script>
-
 <template>
     <AppLayout title="Dashboard">
-        <Welcome></Welcome>
-              
+       <div class="py-2">
+        dsa
+       </div>
     </AppLayout>
 </template>
+
+
+<style lang="scss" scoped>
+
+</style>

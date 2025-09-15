@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LicenciaController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,4 +25,6 @@ Route::middleware([
     })->name('dashboard');
 });
 
+// Route::get('/licencia', [LicenciaController::class])->;
 Route::resource('/licencias', LicenciaController::class);
+Route::resource('/usuarios', UserController::class);
