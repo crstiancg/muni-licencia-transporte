@@ -23,7 +23,7 @@
                 </PrimaryButton>
             </div>
         </div>
-        <div class="dark:bg-slate-800 shadow-xl sm:rounded-lg mt-6">
+        <div class="dark:bg-slate-800 shadow-xl sm:rounded-lg mt-6 relative overflow-x-auto ">
             <div class="p-6">
                 <div class="flex justify-end space-x-2">
                     <TextInput v-model="filter" type="text" placeholder="Buscar..."
@@ -49,7 +49,10 @@
                             <th class="px-4 py-2 text-left">Ruta</th>
                             <th class="px-4 py-2 text-left">Placa</th>
                             <th class="px-4 py-2 text-left">Empresa</th>
+                            <!-- <th class="px-4 py-2 text-left">Codigo</th> -->
+                            <th class="px-4 py-2 text-left">Creado</th>
                             <th class="px-4 py-2 text-left">Estado</th>
+                            <th class="px-4 py-2 text-left">Fecha Registro</th>
                             <th class="px-4 py-2 text-left">Acciones</th>
                         </tr>
                     </thead>
@@ -61,13 +64,16 @@
                             <td class="px-4 py-2">{{ licencia.ruta }}</td>
                             <td class="px-4 py-2">{{ licencia.placa }}</td>
                             <td class="px-4 py-2">{{ licencia.empresa }}</td>
-                            <td class="px-4 py-2">
-                                <span class="px-2 py-1 rounded text-sm font-semibold" :class="licencia.estado === 'no_autorizado'
+                            <!-- <td class="px-4 py-2">{{ licencia.codigo }}</td> -->
+                            <td class="px-4 py-2">{{ licencia?.user?.name ?? 'S/N' }}</td>
+                            <td class="px-4 py-2 text-center">
+                                <span class="px-2 py-1 rounded text-sm font-semibold " :class="licencia.estado === 'no_autorizado'
                                     ? 'bg-red-100 text-red-600'
                                     : 'bg-green-100 text-green-600'">
-                                    {{ licencia.estado === 'no_autorizado' ? 'No Autorizado' : 'Autorizado' }}
+                                    {{ licencia.estado === 'no_autorizado' ? 'Baja' : 'Autorizado' }}
                                 </span>
                             </td>
+                            <td class="px-4 py-2">{{ dayjs(licencia.created_at).format('DD-MM-YYYY : hh-mm-ss') }}</td>
                             <td>
                                 <PrimaryButton class="dark:bg-gray-500" @click="editar(licencia.id)">
                                     Editar
@@ -76,9 +82,12 @@
                         </tr>
                     </tbody>
                 </table>
-
+                
                 <PaginationTable :pagination="pagination" @change="goToPage"></PaginationTable>
             </div>
+            <ActionMessages :on="showMessage" type="success">
+                {{ message }}
+            </ActionMessages>
         </div>
     </AppLayout>
 </template>
@@ -92,16 +101,24 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PaginationTable from '@/Components/PaginationTable.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import LicenciasForm from './LicenciasForm.vue';
+import ActionMessages from '@/Components/ActionMessages.vue';
 import { ref, watch, onMounted } from 'vue'
 const dialog = ref(false);
 const title = ref("");
 const edit = ref(false);
 const editId = ref();
 const formLicenciaRef = ref()
+import dayjs from 'dayjs'
+const showMessage = ref(false);
+const message = ref("");
 const save = () => {
     dialog.value = false;
     console.log("Guardado con existo");
     fetchLicencias();
+    showMessage.value = true;
+    message.value = "Guardado con exito."
+    setTimeout(() => (showMessage.value = false), 3000);
+    return;
 }
 
 

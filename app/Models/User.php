@@ -29,6 +29,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'estado',
+        'dni'
     ];
 
     /**
@@ -64,5 +66,10 @@ class User extends Authenticatable
             'password' => 'hashed',
             
         ];
+    }
+
+    public function licencias()
+    {
+        return $this->hasMany(Licencia::class);
     }
 }

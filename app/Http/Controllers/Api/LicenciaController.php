@@ -6,12 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLicenciaRequest;
 use App\Models\Licencia;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class LicenciaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
     {
          return $this->generateViewSetList(
@@ -23,27 +22,49 @@ class LicenciaController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreLicenciaRequest $request)
     {
-        $licencia = Licencia::create($request->all());
+        DB::beginTransaction();
+    
+        try {
 
-        return $licencia;
+            if (!Auth::check()) {
+                return response()->json(['error' => 'Usuario no autenticado'], 401);
+            }
+            $placa = data_get($request,'placa');
+            
+            Licencia::where('placa', $placa)
+                ->where('estado', 'autorizado') // Solo actualizamos los registros con estado 'autorizado'
+                ->update(['estado' => 'no_autorizado']);
+            
+            $data = $request->all();
+
+            // $user = Auth::user();
+            // $userId = $user->id;
+
+            $data['user_id'] = Auth::id();
+
+            $licencia = Licencia::create($data);
+    
+            // Si todo fue exitoso, hacemos commit de la transacción
+            DB::commit();
+    
+            // Redirigir a la lista de circulaciones
+            // return Redirect::route('circulacion.index');
+        } catch (\Exception $e) {
+            // Si algo salió mal, hacemos rollback de la transacción
+            DB::rollback();
+    
+            // En este caso, puedes redirigir a alguna página con un mensaje de error
+            return back()->withErrors(['error' => 'Hubo un problema al crear el registro. Intente nuevamente.']);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Licencia $licencia)
     {
         return $licencia;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Licencia $licencia)
     {
         $licencia->update($request->all());
@@ -51,9 +72,6 @@ class LicenciaController extends Controller
         return $licencia;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Licencia $licencia)
     {
         //

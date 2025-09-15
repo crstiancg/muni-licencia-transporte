@@ -1,5 +1,5 @@
 <template>
-    {{ form }}
+    <!-- {{ form }} -->
     <form @submit.prevent="submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -18,8 +18,8 @@
             <div>
                 <InputLabel value="Placa del vehiculo"></InputLabel>
                 <TextInput class="w-full" v-model="form.placa" :loading="form.validating"
-                    @change="form.validate('ruta')" :error="form.invalid('ruta')"
-                    :class="form.invalid('ruta') ? 'mb-2' : ''"></TextInput>
+                    @change="form.validate('placa')" :error="form.invalid('placa')"
+                    :class="form.invalid('placa') ? 'mb-2' : ''"></TextInput>
                 <InputError :message="form.errors.placa"></InputError>
             </div>
             <div>
@@ -66,7 +66,8 @@ if (props.edit) {
         ruta: null,
         placa: null,
         empresa: null,
-        codigo: null
+        codigo: null,
+        user_id: null,
     })
 } else {
     form = useForm('post', '/api/licencias', {
@@ -74,7 +75,8 @@ if (props.edit) {
         ruta: null,
         placa: null,
         empresa: null,
-        codigo: null
+        codigo: null,
+        user_id: null,
     })
 }
 

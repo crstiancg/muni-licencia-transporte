@@ -10,7 +10,7 @@ const props = defineProps({
 const classes = computed(() => {
     return props.active
         ? ' bg-[#01aef2] dark:bg-gray-700'
-        : ' px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
+        : ' px-1 pt-1 border-b-2 border-transparent text-md font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
 });
 </script>
 

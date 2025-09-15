@@ -1,5 +1,6 @@
 <template>
-    <AppLayout title="Licencias">
+    <AppLayout title="usuarios">
+    
         <DialogModal max-width="4xl" :show="dialog" :closeable="false" @close="dialog = false">
             <template #title>{{ title }}</template>
             <template #content>
@@ -18,12 +19,12 @@
 
         <div class="mr-1 sm:ml-64">
             <div class="flex justify-end">
-                <PrimaryButton @click="() => { dialog = true; title = 'Crear Licencia'; editId = null; edit = false; }">
+                <PrimaryButton @click="() => { dialog = true; title = 'Crear usuario'; editId = null; edit = false; }">
                     Registrar Nueva
                 </PrimaryButton>
             </div>
         </div>
-        <div class="dark:bg-slate-800 shadow-xl sm:rounded-lg mt-6">
+        <div class="dark:bg-slate-800 shadow-xl sm:rounded-lg mt-6 relative overflow-x-auto ">
             <div class="p-6">
                 <div class="flex justify-end space-x-2">
                     <TextInput v-model="filter" type="text" placeholder="Buscar..."
@@ -34,7 +35,7 @@
                     </button>
                 </div>
                 <!-- <div v-if="loading" class="text-center py-4">Cargando...</div> -->
-                <h2 class="text-xl font-bold mb-4">Listado de Licencias</h2>
+                <h2 class="text-xl font-bold mb-4">Listado de usuarios</h2>
 
                 <table class="w-full border border-gray-300 rounded-lg overflow-hidden">
                     <thead class="bg-gray-100 dark:bg-slate-700">
@@ -43,28 +44,30 @@
                                 Id
                             </th> -->
                             <th class="px-4 py-2 text-left">Nombre</th>
-                            <th class="px-4 py-2 text-left">Fecha de Creación</th>
-                            <th class="px-4 py-2 text-left">Fecha de Actualizacion</th>
+                            <th class="px-4 py-2 text-left">Correo Electronico</th>
+                            <th class="px-4 py-2 text-left">N° DNI</th>
                             <th class="px-4 py-2 text-left">Estado</th>
                             <th class="px-4 py-2 text-left">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="licencia in licencias" :key="licencia.id" v-show="licencia?.id !== 1"
+                        <tr v-for="usuario in usuarios" :key="usuario.id" v-show="usuario?.id !== 1"
                             class="border-t  hover:bg-gray-50 dark:hover:bg-slate-700">
-                            <!-- <td class="px-4 py-2">{{ licencia.id }}</td> -->
-                            <td class="px-4 py-2">{{ licencia.name }}</td>
-                            <td class="px-4 py-2">{{ licencia.created_at }}</td>
-                            <td class="px-4 py-2">{{ licencia.updated_at }}</td>
+                            <!-- <td class="px-4 py-2">{{ usuario.id }}</td> -->
+                            <td class="px-4 py-2">{{ usuario.name }}</td>
+                            <td class="px-4 py-2">{{ usuario.email }}</td>
+                            <td class="px-4 py-2">{{ usuario.dni }}</td>
                              <td class="px-4 py-2">
-                                <span class="px-2 py-1 rounded text-sm font-semibold" :class="licencia.estado === 0
+                                <span @click="cambiarEstado(usuario.id)"  class="px-2 py-1 rounded-lg text-sm font-semibold cursor-pointer" :class="usuario.estado === 0
                                     ? 'bg-red-100 text-red-600'
                                     : 'bg-green-100 text-green-600'">
-                                    {{ licencia.estado === 0 ? 'Inactivo' : 'Activo' }}
+                                    {{ usuario.estado === 0 ? 'Inactivo' : 'Activo' }}
                                 </span>
                             </td>
                             <td>
-                                <PrimaryButton class="dark:bg-gray-500" @click="editar(licencia.id)" >
+                                <!-- {{ usuario.estado }} -->
+                                <!-- <Checkbox class="mr-2" :checked="usuario.estado == 1 ? true: false" @click="cambiarEstado(usuario.id)"></Checkbox> Activar / Desactivar -->
+                                <PrimaryButton class="dark:bg-gray-500" @click="editar(usuario.id)" >
                                     Editar
                                 </PrimaryButton>
                             </td>
@@ -75,6 +78,9 @@
                 <PaginationTable :pagination="pagination" @change="goToPage"></PaginationTable>
             </div>
         </div>
+            <ActionMessages :on="showMessage" type="success">
+            {{ message }}
+        </ActionMessages>
     </AppLayout>
 </template>
 
@@ -88,19 +94,28 @@ import PaginationTable from '@/Components/PaginationTable.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import UsuariosForm from './UsuariosForm.vue';
 import { ref, watch, onMounted } from 'vue'
+import Checkbox from '@/Components/Checkbox.vue';
+import ActionMessages from '@/Components/ActionMessages.vue';
 const dialog = ref(false);
 const title = ref("");
 const edit = ref(false);
 const editId = ref();
 const formUsuariosRef = ref()
+const showMessage = ref(false);
+const message =  ref("");
 const save = () => {
     dialog.value = false;
     console.log("Guardado con existo");
     onRequest();
+    showMessage.value = true;
+    message.value = "Guardado con exito."
+        setTimeout(() => (showMessage.value = false), 3000);
+        return;
+
 }
 
 
-const licencias = ref([]); // Datos de la tabla
+const usuarios = ref([]); // Datos de la tabla
 const loading = ref(false);
 const filter = ref("");
 const pagination = ref({
@@ -119,7 +134,7 @@ const onRequest = async () => {
         const { data } = await axios.get("/api/usuarios", {
             params: { page, per_page: rowsPerPage, order_by, search: filter.value },
         });
-        licencias.value = data.data;
+        usuarios.value = data.data;
         pagination.value.rowsNumber = data.total;
         pagination.value.page = data.current_page;
         pagination.value.rowsPerPage = data.per_page;
@@ -158,12 +173,30 @@ async function editar(id) {
     try {
         const { data } = await axios.get(`api/usuarios/${id}`)
 
+        console.log(data);
+        
         formUsuariosRef.value.form.setData(data)
 
     } catch (error) {
         console.error("Error al cargar usuarios", error)
     }
 
+}
+
+async function cambiarEstado(id) {
+    console.log(id);
+     try {
+    const { data } = await axios.get(`api/usuarios/estado/${id}`)
+
+    console.log(data);
+    onRequest();
+
+    
+    } catch (error) {
+        console.error("Error al cargar usuarios", error)
+    }
+    
+    
 }
 
 </script>

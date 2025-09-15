@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Licencia;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class LicenciaController extends Controller
 {
@@ -22,7 +23,7 @@ class LicenciaController extends Controller
 
     public function store(Request $request)
     {
-        
+
     }
 
     public function show(Licencia $licencia)
@@ -43,5 +44,21 @@ class LicenciaController extends Controller
     public function destroy(Licencia $licencia)
     {
         //
+    }
+
+    public function consulta(Request $request)
+    {
+        
+         $search = $request->search;
+
+        $licencia = Licencia::where('placa', $search)
+            ->where('estado', 'autorizado')
+            ->get();
+
+        if ($licencia->isNotEmpty()) {
+            return response()->json($licencia, 200);
+        } else {
+            return response()->json(['message' => 'No existe esa placa en el sistema'], 404);
+        }
     }
 }

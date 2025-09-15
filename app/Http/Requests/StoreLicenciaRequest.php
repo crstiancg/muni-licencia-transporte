@@ -24,9 +24,10 @@ class StoreLicenciaRequest extends FormRequest
         return [
             'nombre_conductor' => 'required',
             'ruta' => 'required',
-            'placa' => 'required',
+            'placa' => 'required|max:6',
             'empresa' => 'required',
-            'codigo' => 'required',
+            'codigo' => 'required|numeric|min:6',
+            // 'user_id' => 'required'
         ];
     }
 }

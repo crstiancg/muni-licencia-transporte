@@ -1,41 +1,41 @@
 <template>
-    {{ form }}
+    <!-- {{ form }} -->
     <form @submit.prevent="submit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <InputLabel value="Nombre del propietario"></InputLabel>
-                <TextInput class="w-full" v-model="form.nombre_conductor" :loading="form.validating"
-                    @change="form.validate('nombre_conductor')" :error="form.invalid('nombre_conductor')"
-                    :class="form.invalid('nombre_conductor') ? 'mb-2' : ''"></TextInput>
-                <InputError :message="form.errors.nombre_conductor"></InputError>
+                <InputLabel value="Nombre de Usuario"></InputLabel>
+                <TextInput class="w-full" v-model="form.name" :loading="form.validating"
+                    @change="form.validate('name')" :error="form.invalid('name')"
+                    :class="form.invalid('name') ? 'mb-2' : ''"></TextInput>
+                <InputError :message="form.errors.name"></InputError>
             </div>
             <div>
-                <InputLabel value="Dirección"></InputLabel>
-                <TextInput class="w-full" v-model="form.ruta" :loading="form.validating" @change="form.validate('ruta')"
-                    :error="form.invalid('ruta')" :class="form.invalid('ruta') ? 'mb-2' : ''"></TextInput>
-                <InputError :message="form.errors.ruta"></InputError>
+                <InputLabel value="Correo Electronico"></InputLabel>
+                <TextInput class="w-full" v-model="form.email" :loading="form.validating" @change="form.validate('email')"
+                    :error="form.invalid('email')" :class="form.invalid('email') ? 'mb-2' : ''"></TextInput>
+                <InputError :message="form.errors.email"></InputError>
             </div>
             <div>
-                <InputLabel value="Placa del vehiculo"></InputLabel>
-                <TextInput class="w-full" v-model="form.placa" :loading="form.validating"
-                    @change="form.validate('ruta')" :error="form.invalid('ruta')"
-                    :class="form.invalid('ruta') ? 'mb-2' : ''"></TextInput>
-                <InputError :message="form.errors.placa"></InputError>
+                <InputLabel value="Contraseña"></InputLabel>
+                <TextInput class="w-full" v-model="form.password" :loading="form.validating"
+                    @change="form.validate('password')" :error="form.invalid('password')"
+                    :class="form.invalid('password') ? 'mb-2' : ''"></TextInput>
+                <InputError :message="form.errors.password"></InputError>
             </div>
             <div>
-                <InputLabel value="Nombre de la empresa"></InputLabel>
-                <TextInput class="w-full" v-model="form.empresa" :loading="form.validating"
-                    @change="form.validate('empresa')" :error="form.invalid('empresa')"
-                    :class="form.invalid('empresa') ? 'mb-2' : ''"></TextInput>
-                <InputError :message="form.errors.empresa"></InputError>
+                <InputLabel value="Confirmar Contraseña"></InputLabel>
+                <TextInput class="w-full" v-model="form.password_confirmation" :loading="form.validating"
+                    @change="form.validate('password_confirmation')" :error="form.invalid('password_confirmation')"
+                    :class="form.invalid('password_confirmation') ? 'mb-2' : ''"></TextInput>
+                <InputError :message="form.errors.password_confirmation"></InputError>
 
             </div>
             <div>
-                <InputLabel value="Codigo de empresa"></InputLabel>
-                <TextInput class="w-full" v-model="form.codigo" :loading="form.validating"
-                    @change="form.validate('codigo')" :error="form.invalid('codigo')"
-                    :class="form.invalid('codigo') ? 'mb-2' : ''"></TextInput>
-                <InputError :message="form.errors.codigo"></InputError>
+                <InputLabel value="Documento de Identidad"></InputLabel>
+                <TextInput class="w-full" v-model="form.dni" :loading="form.validating"
+                    @change="form.validate('dni')" :error="form.invalid('dni')"
+                    :class="form.invalid('dni') ? 'mb-2' : ''"></TextInput>
+                <InputError :message="form.errors.dni"></InputError>
 
             </div>
         </div>
@@ -44,10 +44,8 @@
 
 <script setup>
 import { useForm } from 'laravel-precognition-vue';
-
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import { onMounted } from 'vue';
 const emits = defineEmits(["save"]);
@@ -61,20 +59,20 @@ const props = defineProps({
 
 let form;
 if (props.edit) {
-    form = useForm("put", "/api/licencias/" + props.id, {
-        nombre_conductor: null,
-        ruta: null,
-        placa: null,
-        empresa: null,
-        codigo: null
+    form = useForm("put", "/api/usuarios/" + props.id, {
+        name: null,
+        email: null,
+        password: null,
+        dni: null,
+        password_confirmation: null,
     })
 } else {
-    form = useForm('post', '/api/licencias', {
-        nombre_conductor: null,
-        ruta: null,
-        placa: null,
-        empresa: null,
-        codigo: null
+    form = useForm('post', '/api/usuarios', {
+        name: null,
+        email: null,
+        password: null,
+        dni: null,
+        password_confirmation: null,
     })
 }
 
